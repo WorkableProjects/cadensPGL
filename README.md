@@ -5,6 +5,10 @@ A family-friendly wishlist site. It reads the gift list live from `data/wishlist
 - **Gift list:** `index.html` — what family members see. No sign-in.
 - **List keeper tools:** `admin.html` — import a GiftList export, record purchases, upload images.
 
+## Welcome screen and looks
+
+On each new visit (per browser tab session), visitors first pick a **look** — Declaration of Independence, Apple, or Anthropic — and a **text size** (Normal, Bigger, Biggest). Choices preview live, are remembered on that device, and can be changed later from the toolbar. Entering plays a short intro animation for the chosen look (click or press any key to skip; skipped automatically with reduced motion). Looks live in `assets/css/themes.css`; the welcome screen and intros in `assets/css/gate.css` and `assets/js/ui/gate.js`.
+
 ## Hosting (GitHub Pages)
 
 1. Repository **Settings → Pages → Build and deployment**: Source **Deploy from a branch**, Branch **main**, folder **/ (root)**.

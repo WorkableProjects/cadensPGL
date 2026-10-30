@@ -1,5 +1,6 @@
 // Guest wishlist page: loads the CSV, renders cards, handles search/filter,
-// the detail dialog, the mark-as-purchased flow, refresh and text size.
+// the detail dialog, the mark-as-purchased flow, refresh, look and text size,
+// plus the welcome screen + intro shown once per visit.
 
 import { CONFIG } from './config.js';
 import { loadWishlist } from './data-service.js';
@@ -9,12 +10,13 @@ import { h, errorIcon, giftIcon } from './ui/dom.js';
 import { createCard, createSkeletons } from './ui/card.js';
 import { createDetailDialog, createConfirmDialog } from './ui/dialogs.js';
 import { initToasts, showToast } from './ui/toast.js';
+import { runGate, playIntro, SKINS, SIZES } from './ui/gate.js';
 
 const $ = (id) => document.getElementById(id);
 const el = {
   title: $('page-title'), welcome: $('welcome'), search: $('search'), grid: $('grid'), stateArea: $('state-area'),
   stats: $('stats'), banners: $('banners'), refresh: $('refresh'), refreshLabel: $('refresh-label'),
-  updated: $('updated'), sr: $('sr-status'), toasts: $('toasts'),
+  updated: $('updated'), sr: $('sr-status'), toasts: $('toasts'), gateForm: $('gate-form'), gateTitle: $('gate-title'), intro: $('intro'),
 };
 
 const state = {
@@ -309,6 +311,40 @@ function applyTextSize(size, { save = true, animate = false } = {}) {
   }
 }
 
+// ---------- look ----------
+function applySkin(skin, { save = true, animate = false } = {}) {
+  document.documentElement.dataset.skin = skin;
+  if (save) safeSet('localStorage', 'pgl.skin', skin);
+  document.querySelectorAll('#skin-seg .seg-btn').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.skin === skin)));
+  if (animate) {
+    document.body.classList.remove('skin-fade');
+    void document.body.offsetWidth;
+    document.body.classList.add('skin-fade');
+    setTimeout(() => document.body.classList.remove('skin-fade'), 500);
+  }
+}
+
+// ---------- welcome screen + intro ----------
+async function enterSite() {
+  const root = document.documentElement;
+  el.gateTitle.textContent = CONFIG.title;
+  const chosen = await runGate({
+    form: el.gateForm,
+    skin: root.dataset.skin,
+    size: root.dataset.textSize,
+    onSkin: (k) => applySkin(k, { save: false }),
+    onSize: (z) => applyTextSize(z, { save: false }),
+  });
+  applySkin(chosen.skin);
+  applyTextSize(chosen.size);
+  safeSet('sessionStorage', 'pgl.entered', '1');
+  root.classList.remove('gate-open');
+  await playIntro(el.intro, chosen.skin, CONFIG.title);
+  root.classList.add('site-enter');
+  setTimeout(() => root.classList.remove('site-enter'), 1200);
+  if (state.hasData) renderAll('all');
+}
+
 // ---------- init ----------
 function init() {
   document.title = CONFIG.title;
@@ -317,11 +353,14 @@ function init() {
   initToasts(el.toasts);
 
   const savedSize = safeGet('localStorage', 'pgl.textSize');
-  applyTextSize(['normal', 'bigger', 'biggest'].includes(savedSize) ? savedSize : 'normal', { save: false });
+  applyTextSize(SIZES.includes(savedSize) ? savedSize : 'normal', { save: false });
+  const savedSkin = safeGet('localStorage', 'pgl.skin');
+  applySkin(SKINS.includes(savedSkin) ? savedSkin : 'apple', { save: false });
   const savedFilter = safeGet('sessionStorage', 'pgl.filter');
   if (['all', 'available', 'purchased'].includes(savedFilter)) state.filter = savedFilter;
 
   document.querySelectorAll('#size-seg .seg-btn').forEach((b) => b.addEventListener('click', () => applyTextSize(b.dataset.size, { animate: true })));
+  document.querySelectorAll('#skin-seg .seg-btn').forEach((b) => b.addEventListener('click', () => applySkin(b.dataset.skin, { animate: true })));
   document.querySelectorAll('#filter-seg .seg-btn').forEach((b) => b.addEventListener('click', () => setFilter(b.dataset.filter)));
   el.search.addEventListener('input', () => {
     clearTimeout(searchTimer);
@@ -332,6 +371,7 @@ function init() {
   renderStats([]);
   load();
   startBackground();
+  if (document.documentElement.classList.contains('gate-open')) enterSite();
 }
 
 init();

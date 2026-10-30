@@ -84,17 +84,39 @@ input[type="number"].input { border-radius: var(--radius-sm); max-width: 10rem; 
 .grid { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-5);
   grid-template-columns: repeat(auto-fill, minmax(min(var(--card-min), 100%), 1fr)); }
 .grid.size-fade { animation: soft-fade var(--dur-slow) var(--ease-out); }
-.card-li { display: flex; min-width: 0; }
+.card-li { display: flex; min-width: 0; container-type: inline-size; }
 .card-li.enter { animation: card-in var(--dur-slow) var(--ease-out) both; animation-delay: calc(var(--i, 0) * 30ms); }
 .card {
-  position: relative; display: flex; flex-direction: column; width: 100%; background: var(--surface); border: 1px solid var(--border);
+  position: relative; display: flex; flex-direction: row; width: 100%; background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden;
   transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
 }
 .card:hover, .card:focus-within { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-.card.most-wanted { border-top: 4px solid var(--gold); box-shadow: 0 0 0 1px var(--gold-soft), var(--shadow-sm); }
+.card.most-wanted { border-left: 4px solid var(--gold); box-shadow: 0 0 0 1px var(--gold-soft), var(--shadow-sm); }
 .card.most-wanted:hover, .card.most-wanted:focus-within { box-shadow: 0 0 0 1px var(--gold-soft), var(--shadow-md); }
-.card-body { display: flex; flex-direction: column; gap: var(--sp-3); padding: var(--sp-4); flex: 1; min-width: 0; }
+.card-body { display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-5); flex: 1; min-width: 0; }
+.card-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--sp-1) var(--sp-3); }
+.card-head .card-title { flex: 1 1 12rem; }
+.card-head .meta { flex: none; }
+
+/* Horizontal card: picture on the left, everything else on the right. */
+.card > .media { flex: 0 0 38%; aspect-ratio: auto; min-height: calc(13rem * var(--scale)); border-right: 1px solid var(--border); }
+.card > .media img { position: absolute; inset: 0; padding: var(--sp-3); }
+@container (max-width: 32rem) {
+  .card > .media { flex-basis: 36%; min-height: calc(9rem * var(--scale)); }
+  .card > .media img { padding: var(--sp-2); }
+  .card-body { padding: var(--sp-3); }
+  .card .actions > .btn { flex: 1 1 100%; }
+}
+@container (max-width: 17rem) {
+  .card { flex-direction: column; }
+  .card > .media { flex-basis: auto; aspect-ratio: 4 / 3; min-height: 0; border-right: 0; border-bottom: 1px solid var(--border); }
+}
+/* At the biggest text size, phone-width cards stack so text stays readable. */
+@container (max-width: 26rem) {
+  :root[data-text-size="biggest"] .card { flex-direction: column; }
+  :root[data-text-size="biggest"] .card > .media { flex-basis: auto; aspect-ratio: 4 / 3; min-height: 0; border-right: 0; border-bottom: 1px solid var(--border); }
+}
 
 .media { position: relative; aspect-ratio: 4 / 3; background: var(--surface-2); overflow: hidden; }
 .media img { width: 100%; height: 100%; object-fit: contain; transition: filter var(--dur) var(--ease-out); }
@@ -139,7 +161,7 @@ input[type="number"].input { border-radius: var(--radius-sm); max-width: 10rem; 
 .tag { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 0 var(--sp-3); font-size: var(--fs-xs); font-weight: 700; color: var(--text-muted); }
 .local-note { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); font-size: var(--fs-sm); font-weight: 700; color: var(--success); background: var(--success-soft); border-radius: var(--radius-sm); padding: var(--sp-2) var(--sp-3); }
 .actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: auto; padding-top: var(--sp-2); }
-.card .actions > .btn-primary, .card .actions > .note { flex: 1 1 100%; }
+.card .actions > .btn-primary, .card .actions > .note { flex: 1 1 11rem; }
 .note { margin: 0; min-height: var(--control-h); display: flex; align-items: center; justify-content: center; gap: .3em; padding: 0 var(--control-pad-x); border-radius: var(--radius-pill); font-weight: 700; font-size: var(--fs-sm); text-align: center; }
 .note-done { background: var(--success-soft); color: var(--success); }
 .note-none { background: var(--surface-2); color: var(--text-muted); border: 1px dashed var(--border); }
@@ -223,6 +245,7 @@ html:has(dialog[open]) { overflow: hidden; }
 /* ---------- Keyframes ---------- */
 @keyframes fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @keyframes card-in { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+body.skin-fade { animation: soft-fade var(--dur-slow) var(--ease-out); }
 @keyframes soft-fade { from { opacity: .35; } to { opacity: 1; } }
 @keyframes dlg-in { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
 @keyframes dlg-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(14px) scale(.97); } }

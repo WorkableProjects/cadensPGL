@@ -63,9 +63,9 @@
   --control-pad-x: calc(1.1rem * var(--scale));
 
   /* Layout */
-  --page-max: 1200px;
+  --page-max: 1320px;
   --gutter: clamp(16px, 4vw, 32px);
-  --card-min: calc(260px * var(--scale));
+  --card-min: calc(34rem * var(--scale));
 
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);

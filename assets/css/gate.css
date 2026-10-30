@@ -1,0 +1,156 @@
+/* Welcome screen (pick a look + text size) and the intro animation that follows.
+   <html class="gate-open"> is set by the inline head script before first paint. */
+
+.gate, .intro { display: none; }
+html.gate-open body > :not(.gate):not(.intro) { visibility: hidden; }
+html.gate-open, html.intro-playing { overflow: hidden; }
+html.gate-open .gate { display: flex; }
+
+.gate {
+  position: fixed; inset: 0; z-index: 200; overflow-y: auto; overscroll-behavior: contain;
+  justify-content: center; align-items: flex-start; padding: var(--sp-5) var(--gutter);
+  background:
+    radial-gradient(50rem 30rem at 10% -10%, var(--brand-soft), transparent 70%),
+    radial-gradient(40rem 26rem at 110% 110%, var(--gold-soft), transparent 70%),
+    var(--bg);
+  transition: background var(--dur-slow) var(--ease-out);
+}
+.gate-panel { width: min(64rem, 100%); margin-block: auto; display: flex; flex-direction: column; gap: var(--sp-5); animation: fade-up var(--dur-slow) var(--ease-out) both; }
+.gate-head { text-align: center; }
+.gate-kicker { margin: 0; font-weight: 800; font-size: var(--fs-sm); letter-spacing: .12em; text-transform: uppercase; color: var(--brand); }
+.gate-title { margin: var(--sp-1) 0 var(--sp-2); font-family: var(--font-display); font-size: var(--fs-2xl); line-height: 1.1; }
+:root[data-skin="declaration"] .gate-title { font-family: var(--font-flourish); font-weight: 400; font-size: calc(var(--fs-2xl) * 1.35); }
+.gate-sub { margin: 0; color: var(--text-muted); font-weight: 600; }
+
+.gate-set { border: 0; margin: 0; padding: 0; min-width: 0; }
+.gate-set legend { padding: 0; margin-bottom: var(--sp-3); font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg); }
+.gate-step { display: inline-grid; place-items: center; width: 1.8em; height: 1.8em; margin-right: var(--sp-2); border-radius: 50%; background: var(--brand); color: var(--brand-contrast); font-family: var(--font-body); font-size: var(--fs-sm); vertical-align: .1em; }
+.gate-options { display: grid; gap: var(--sp-3); grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); }
+.gate-sizes { grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr)); }
+
+.opt { position: relative; display: flex; flex-direction: column; gap: var(--sp-2); padding: var(--sp-3); cursor: pointer;
+  background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur-fast), transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out); }
+.opt:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.opt input { position: absolute; opacity: 0; pointer-events: none; }
+.opt:has(input:checked) { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft), var(--shadow-md); }
+.opt:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+.opt-check { position: absolute; top: var(--sp-2); right: var(--sp-2); width: 1.7rem; height: 1.7rem; display: grid; place-items: center; border-radius: 50%;
+  background: var(--brand); color: var(--brand-contrast); font-weight: 800; font-size: .9rem; transform: scale(0); transition: transform var(--dur) var(--ease-spring); z-index: 1; }
+.opt:has(input:checked) .opt-check { transform: scale(1); }
+.opt-name { font-weight: 800; font-size: var(--fs-md); line-height: 1.25; }
+.opt-desc { color: var(--text-muted); font-size: var(--fs-sm); margin-top: calc(-1 * var(--sp-1)); }
+
+/* Look previews: fixed colors so each one always shows its own style. */
+.look-swatch { display: flex; gap: 10px; align-items: center; padding: 12px; height: 6.5rem; border-radius: calc(var(--radius) - 6px); overflow: hidden; }
+.look-swatch .sw-img { flex: 0 0 34%; align-self: stretch; border-radius: 6px; }
+.look-swatch .sw-lines { flex: 1; display: grid; gap: 6px; align-content: center; }
+.look-swatch .sw-title { font-size: 1.15rem; line-height: 1.1; }
+.look-swatch .sw-line { height: 6px; border-radius: 3px; }
+.look-swatch .sw-btn { height: 14px; width: 60%; border-radius: 7px; margin-top: 2px; }
+
+.look-declaration .look-swatch { background: radial-gradient(ellipse at 50% 50%, #f6ead0 40%, #dcc391 100%); border: 1px solid #c9b183; }
+.look-declaration .sw-img { background: #e6d4aa; border: 1px solid #c9b183; }
+.look-declaration .sw-title { font-family: "Pinyon Script", cursive; color: #2b1d0e; font-size: 1.5rem; }
+.look-declaration .sw-line { background: #8a6f4a; opacity: .5; }
+.look-declaration .sw-btn { background: #7a2614; border-radius: 3px; }
+
+.look-apple .look-swatch { background: #f5f5f7; }
+.look-apple .sw-img { background: #fff; box-shadow: 0 2px 8px rgb(0 0 0 / .08); border-radius: 10px; }
+.look-apple .sw-title { font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif; font-weight: 700; letter-spacing: -.02em; color: #1d1d1f; }
+.look-apple .sw-line { background: #d2d2d7; }
+.look-apple .sw-btn { background: #0066cc; }
+
+.look-anthropic .look-swatch { background: #f0eee6; }
+.look-anthropic .sw-img { background: #fff; border: 1px solid #e3dacc; border-radius: 8px; }
+.look-anthropic .sw-title { font-family: "Source Serif 4", Georgia, serif; font-weight: 500; color: #141413; }
+.look-anthropic .sw-line { background: #c2c0b6; }
+.look-anthropic .sw-btn { background: #b5532f; border-radius: 4px; }
+
+/* Text-size previews use fixed rem sizes matching the --scale values. */
+.size-sample { font-family: var(--font-display); font-weight: 700; line-height: 1; display: flex; align-items: flex-end; height: 3.4rem; }
+.size-normal .size-sample { font-size: 1.5rem; }
+.size-bigger .size-sample { font-size: 1.8rem; }
+.size-biggest .size-sample { font-size: 2.2rem; }
+
+.gate-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--sp-3); }
+.gate-enter { font-size: var(--fs-lg); padding-inline: calc(var(--control-pad-x) * 2); min-height: calc(var(--control-h) * 1.15); }
+.gate-enter .arrow { transition: transform var(--dur) var(--ease-out); }
+.gate-enter:hover .arrow { transform: translateX(4px); }
+.gate.leaving { animation: gate-out 380ms var(--ease-out) forwards; }
+
+/* ---------- Intro animation ---------- */
+html.intro-playing .intro { display: grid; }
+.intro { position: fixed; inset: 0; z-index: 210; place-items: center; overflow: hidden; cursor: pointer; }
+.intro.done { animation: intro-out 600ms var(--ease-out) forwards; pointer-events: none; }
+.intro-skip { position: absolute; right: var(--sp-4); bottom: var(--sp-4); z-index: 2; font-size: var(--fs-sm); opacity: .75; }
+.intro-skip:hover { opacity: 1; }
+
+/* Declaration: a scroll unrolls, the title is written in, a wax seal stamps it. */
+.intro-declaration { background: #2a1a0c; color: #2b1d0e; }
+.intro-declaration .intro-skip { color: #f8efd8; }
+.decl-scroll { position: relative; width: min(46rem, 88vw); padding: clamp(2rem, 6vw, 4rem) clamp(1.5rem, 5vw, 3.5rem); text-align: center;
+  background: radial-gradient(ellipse at 30% 20%, #fbf3dd, transparent 60%), radial-gradient(ellipse at 50% 50%, #f1e2bd 40%, #d8bd86 100%);
+  box-shadow: 0 30px 80px rgb(0 0 0 / .5); clip-path: inset(50% 0 50% 0); animation: unroll 900ms cubic-bezier(.65,0,.35,1) 100ms forwards; }
+.decl-rod { position: absolute; left: -4%; right: -4%; height: 18px; border-radius: 9px; background: linear-gradient(#7b4a22, #4a2a10 60%, #2e1a08); box-shadow: 0 4px 10px rgb(0 0 0 / .4); top: 50%; z-index: 1; }
+.decl-rod.top { animation: rod-up 900ms cubic-bezier(.65,0,.35,1) 100ms forwards; }
+.decl-rod.bottom { animation: rod-down 900ms cubic-bezier(.65,0,.35,1) 100ms forwards; }
+.decl-stage { position: relative; display: grid; place-items: center; }
+.decl-kicker { margin: 0 0 .6rem; font-family: "IM Fell English", Georgia, serif; font-variant: small-caps; letter-spacing: .14em; font-size: clamp(.9rem, 2.4vw, 1.15rem); opacity: 0; animation: fade-in 500ms ease 900ms forwards; }
+.decl-title { margin: 0; font-family: "Pinyon Script", cursive; font-weight: 400; font-size: clamp(2.6rem, 9vw, 5.2rem); line-height: 1.2; padding: 0 .3em;
+  clip-path: inset(0 100% 0 0); animation: write 1300ms steps(26, end) 1100ms forwards; }
+.decl-rule { height: 2px; width: 70%; margin: .6rem auto 0; background: #5a4327; transform: scaleX(0); animation: draw-x 500ms ease 2300ms forwards; }
+.decl-seal { position: absolute; right: -1rem; bottom: -2.2rem; width: clamp(4rem, 12vw, 5.5rem); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #c0392b, #8a1c1c 60%, #5c1010); color: #f3c9a8; font-family: "IM Fell English", serif; font-size: clamp(1.6rem, 5vw, 2.3rem);
+  box-shadow: 0 4px 0 #5c1010, 0 8px 16px rgb(0 0 0 / .35), inset 0 0 0 5px rgb(0 0 0 / .15); opacity: 0; animation: stamp 420ms var(--ease-spring) 2500ms forwards; }
+
+/* Apple: black stage, the title resolves out of a blur with a gradient sheen. */
+.intro-apple { background: #000; color: #f5f5f7; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif; }
+.intro-apple .intro-skip { color: #f5f5f7; }
+.apple-stage { text-align: center; padding: 0 1.5rem; }
+.apple-title { margin: 0; font-weight: 700; letter-spacing: -0.035em; font-size: clamp(2.6rem, 9vw, 6rem); line-height: 1.05;
+  background: linear-gradient(90deg, #2997ff, #a259ff 35%, #ff5f9e 65%, #ff9f0a); -webkit-background-clip: text; background-clip: text; color: transparent;
+  background-size: 200% 100%; opacity: 0; filter: blur(24px); transform: scale(1.12);
+  animation: apple-resolve 1400ms cubic-bezier(.16,1,.3,1) 200ms forwards, sheen 2600ms ease-in-out 600ms forwards; }
+.apple-sub { margin: 1rem 0 0; font-size: clamp(1.1rem, 3vw, 1.6rem); font-weight: 600; color: #a1a1a6; opacity: 0; transform: translateY(12px); animation: rise 800ms cubic-bezier(.16,1,.3,1) 1300ms forwards; }
+.intro-apple.done .apple-stage { animation: apple-zoom 600ms cubic-bezier(.7,0,.84,0) forwards; }
+
+/* Anthropic: a clay ring draws itself, then the title is set word by word. */
+.intro-anthropic { background: #faf9f5; color: #141413; }
+.intro-anthropic .intro-skip { color: #141413; }
+.anth-stage { display: grid; place-items: center; text-align: center; gap: 1.4rem; padding: 0 1.5rem; }
+.anth-ring { width: clamp(4.5rem, 14vw, 7rem); height: auto; overflow: visible; }
+.anth-ring circle { fill: none; stroke: #b5532f; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 302; stroke-dashoffset: 302; transform: rotate(-90deg); transform-origin: 50% 50%;
+  animation: ring-draw 1000ms cubic-bezier(.65,0,.35,1) 150ms forwards; }
+.anth-ring .dot { fill: #b5532f; stroke: none; transform-box: fill-box; transform-origin: center; transform: scale(0); animation: dot-pop 500ms var(--ease-spring) 1000ms forwards; }
+.anth-title { margin: 0; font-family: "Source Serif 4", Georgia, serif; font-weight: 500; letter-spacing: -0.015em; font-size: clamp(2.4rem, 8vw, 5rem); line-height: 1.1; }
+.anth-title .w { display: inline-block; opacity: 0; transform: translateY(.4em); animation: rise 700ms cubic-bezier(.16,1,.3,1) forwards; animation-delay: calc(1100ms + var(--wi) * 160ms); }
+.anth-rule { height: 2px; width: min(18rem, 60vw); background: #b5532f; transform: scaleX(0); transform-origin: left; animation: draw-x 700ms cubic-bezier(.65,0,.35,1) 1800ms forwards; }
+.anth-sub { margin: 0; font-family: "Inter", system-ui, sans-serif; color: #5e5d59; font-size: clamp(1rem, 2.6vw, 1.25rem); opacity: 0; animation: fade-in 600ms ease 2100ms forwards; }
+@media (prefers-color-scheme: dark) {
+  .intro-anthropic { background: #141413; color: #faf9f5; }
+  .intro-anthropic .intro-skip { color: #faf9f5; }
+  .anth-sub { color: #c2c0b6; }
+}
+
+/* Site entrance after the intro */
+html.site-enter .site-header { animation: site-rise 700ms var(--ease-out) both; }
+html.site-enter .toolbar { animation: site-rise 700ms var(--ease-out) 90ms both; }
+html.site-enter .main, html.site-enter .stats { animation: site-rise 700ms var(--ease-out) 180ms both; }
+
+@keyframes gate-out { to { opacity: 0; transform: scale(1.03); } }
+@keyframes intro-out { to { opacity: 0; visibility: hidden; } }
+@keyframes fade-in { to { opacity: 1; } }
+@keyframes rise { to { opacity: 1; transform: none; } }
+@keyframes unroll { to { clip-path: inset(0 0 0 0); } }
+@keyframes rod-up { to { top: -9px; } }
+@keyframes rod-down { to { top: calc(100% - 9px); } }
+@keyframes write { to { clip-path: inset(0 0 0 0); } }
+@keyframes draw-x { to { transform: scaleX(1); } }
+@keyframes stamp { 0% { opacity: 0; transform: scale(2.4) rotate(-25deg); } 100% { opacity: 1; transform: scale(1) rotate(-8deg); } }
+@keyframes apple-resolve { to { opacity: 1; filter: blur(0); transform: scale(1); } }
+@keyframes sheen { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@keyframes apple-zoom { to { transform: scale(1.6); opacity: 0; filter: blur(10px); } }
+@keyframes ring-draw { to { stroke-dashoffset: 0; } }
+@keyframes dot-pop { to { transform: scale(1); } }
+@keyframes site-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }

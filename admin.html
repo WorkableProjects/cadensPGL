@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>List keeper tools</title>
+  <script>
+    try {
+      var s = localStorage.getItem('pgl.textSize');
+      if (s === 'bigger' || s === 'biggest') document.documentElement.setAttribute('data-text-size', s);
+    } catch (e) { /* ignore */ }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+  <header class="page-head">
+    <div class="wrap">
+      <a class="back" href="index.html">&larr; Back to the gift list</a>
+      <h1>List keeper tools</h1>
+      <p class="note">Family members never need this page. Changes here are saved to the repository's main branch and appear on the gift list after a refresh.</p>
+    </div>
+  </header>
+
+  <main class="wrap stack">
+    <section class="card" id="connect" aria-labelledby="h-connect">
+      <h2 id="h-connect">1. GitHub connection</h2>
+      <div id="connect-body"></div>
+    </section>
+
+    <section class="card" id="health" aria-labelledby="h-health">
+      <div class="card-head">
+        <h2 id="h-health">2. Current list health</h2>
+        <button type="button" class="btn secondary" id="reload-btn">Reload</button>
+      </div>
+      <div id="health-body" aria-live="polite"><p class="muted">Loading&hellip;</p></div>
+    </section>
+
+    <section class="card" id="import" aria-labelledby="h-import">
+      <h2 id="h-import">3. Import a GiftList CSV</h2>
+      <p class="muted">Export your list from GiftList as CSV, then choose it here. Nothing is changed until you publish or download.</p>
+      <label class="dropzone" id="dropzone">
+        <span class="dz-title">Drop a CSV file here, or choose one</span>
+        <span class="dz-sub" id="dz-file">No file chosen</span>
+        <input type="file" id="import-file" accept=".csv,text/csv">
+      </label>
+      <div id="import-body"></div>
+    </section>
+
+    <section class="card" id="purchases" aria-labelledby="h-purchases">
+      <h2 id="h-purchases">4. Purchase status (shared for everyone)</h2>
+      <p class="muted">When a family member tells you they bought something, record it here so everyone sees it.</p>
+      <div id="purchases-body"></div>
+    </section>
+
+    <section class="card" id="images" aria-labelledby="h-images">
+      <h2 id="h-images">5. Item images</h2>
+      <p class="muted">The GiftList export's images are relative <code>media/&hellip;</code> paths that can't be loaded, so upload a picture for each item (save the product image from the store page). The gift list tries <code>.webp</code>, then <code>.jpg</code>, then <code>.png</code>.</p>
+      <div id="images-body"></div>
+    </section>
+  </main>
+
+  <script src="vendor/papaparse.min.js"></script>
+  <script type="module" src="assets/js/admin.js"></script>
+</body>
+</html>

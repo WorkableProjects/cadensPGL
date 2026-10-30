@@ -1,0 +1,46 @@
+{
+  "project": "pgl",
+  "tasks": [
+    {
+      "id": "T01",
+      "title": "Guest wishlist UI",
+      "agent": "executor-sonnet",
+      "depends_on": [],
+      "owns": [
+        "index.html",
+        "assets/css/app.css",
+        "assets/js/app.js",
+        "assets/js/ui/**"
+      ],
+      "spec": "tasks/T01.md",
+      "verify_cmd": "node --check assets/js/app.js"
+    },
+    {
+      "id": "T02",
+      "title": "Admin import/status/publish page",
+      "agent": "executor-sonnet",
+      "depends_on": [],
+      "owns": [
+        "admin.html",
+        "assets/css/admin.css",
+        "assets/js/admin.js",
+        "assets/js/admin/**"
+      ],
+      "spec": "tasks/T02.md",
+      "verify_cmd": "node --check assets/js/admin.js"
+    },
+    {
+      "id": "T03",
+      "title": "Unit tests for csv/model",
+      "agent": "executor-haiku",
+      "depends_on": [],
+      "owns": [
+        "tests/model.test.js",
+        "tests/csv.test.js",
+        "tests/fixtures/**"
+      ],
+      "spec": "tasks/T03.md",
+      "verify_cmd": "npm test"
+    }
+  ]
+}

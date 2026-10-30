@@ -1,0 +1,138 @@
+/* Design tokens shared by the guest page and the admin page.
+   Text-size modes are set on <html data-text-size="normal|bigger|biggest">;
+   every size, control height and gap derives from --scale, so components
+   should use these variables rather than fixed px values. */
+
+:root {
+  color-scheme: light dark;
+
+  /* Palette (light) */
+  --bg: #fbf7f2;
+  --bg-accent: #f3ebe0;
+  --surface: #ffffff;
+  --surface-2: #f7f2ec;
+  --text: #2a2320;
+  --text-muted: #5e544d;          /* 7:1 on --surface */
+  --border: #e6ddd3;
+  --brand: #b3401f;               /* warm red, 5.9:1 on white */
+  --brand-strong: #8f3018;
+  --brand-contrast: #ffffff;
+  --brand-soft: #fbe9e2;
+  --gold: #8a5a00;                /* most-wanted text, 6:1 on --gold-soft */
+  --gold-soft: #fff1cc;
+  --success: #1f6f43;             /* purchased text, 6.4:1 on white */
+  --success-soft: #e3f4ea;
+  --warning: #8a4b00;
+  --warning-soft: #fff0dc;
+  --danger: #a1262b;
+  --danger-soft: #fde8e8;
+  --focus: #1b5fd1;
+  --shadow-sm: 0 1px 2px rgb(60 30 10 / 0.06), 0 1px 3px rgb(60 30 10 / 0.08);
+  --shadow-md: 0 4px 12px rgb(60 30 10 / 0.08), 0 2px 4px rgb(60 30 10 / 0.06);
+  --shadow-lg: 0 18px 40px rgb(60 30 10 / 0.16), 0 6px 12px rgb(60 30 10 / 0.08);
+  --overlay: rgb(30 20 15 / 0.55);
+
+  /* Type */
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+
+  --scale: 1;
+  --fs-xs: calc(0.8125rem * var(--scale));
+  --fs-sm: calc(0.9375rem * var(--scale));
+  --fs-md: calc(1.0625rem * var(--scale));
+  --fs-lg: calc(1.25rem * var(--scale));
+  --fs-xl: calc(1.625rem * var(--scale));
+  --fs-2xl: calc(clamp(2rem, 5vw, 3rem) * var(--scale));
+  --lh: 1.55;
+
+  /* Space & shape */
+  --sp-1: calc(0.25rem * var(--scale));
+  --sp-2: calc(0.5rem * var(--scale));
+  --sp-3: calc(0.75rem * var(--scale));
+  --sp-4: calc(1rem * var(--scale));
+  --sp-5: calc(1.5rem * var(--scale));
+  --sp-6: calc(2rem * var(--scale));
+  --sp-7: calc(3rem * var(--scale));
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  /* Controls: minimum 44px touch target, grows with text size */
+  --control-h: max(44px, calc(2.75rem * var(--scale)));
+  --control-pad-x: calc(1.1rem * var(--scale));
+
+  /* Layout */
+  --page-max: 1200px;
+  --gutter: clamp(16px, 4vw, 32px);
+  --card-min: calc(260px * var(--scale));
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 140ms;
+  --dur: 240ms;
+  --dur-slow: 420ms;
+}
+
+:root[data-text-size="bigger"] { --scale: 1.2; --lh: 1.6; }
+:root[data-text-size="biggest"] { --scale: 1.45; --lh: 1.65; --card-min: 100%; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1c1715;
+    --bg-accent: #241e1b;
+    --surface: #2a2320;
+    --surface-2: #332b27;
+    --text: #f6efe9;
+    --text-muted: #cdbfb4;
+    --border: #463b35;
+    --brand: #ff8a65;
+    --brand-strong: #ffab91;
+    --brand-contrast: #1c1715;
+    --brand-soft: #3d2a23;
+    --gold: #ffd166;
+    --gold-soft: #3d3220;
+    --success: #7ad7a0;
+    --success-soft: #1f3529;
+    --warning: #ffc078;
+    --warning-soft: #3b2c1a;
+    --danger: #ff9a9e;
+    --danger-soft: #3d2324;
+    --focus: #8ab4ff;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 12px rgb(0 0 0 / 0.35);
+    --shadow-lg: 0 18px 40px rgb(0 0 0 / 0.5);
+    --overlay: rgb(0 0 0 / 0.65);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 1ms; --dur: 1ms; --dur-slow: 1ms; }
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Base */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  line-height: var(--lh);
+  overflow-wrap: anywhere;
+}
+img { max-width: 100%; display: block; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}

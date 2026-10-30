@@ -21,7 +21,7 @@ export const CONFIG = Object.freeze({
 
   // Copy shown on the home page.
   title: "Caden's Gift List",
-  welcome: "Thanks for looking! Tap any gift to see why I want it and where to buy it.",
+  welcome: "Thanks for looking! Here's what I'm hoping for this birthday and Christmas.",
 
   // Optional contact link shown after someone marks a gift as bought, so the
   // list keeper can record it for everyone (e.g. "mailto:parent@example.com"

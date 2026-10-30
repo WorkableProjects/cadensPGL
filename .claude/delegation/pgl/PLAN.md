@@ -19,3 +19,9 @@ assets/js/config.js, csv.js, model.js, data-service.js, local-marks.js, github.j
 ## Waves
 - Wave 1 (parallel): T01 guest UI (Sonnet), T02 admin (Sonnet), T03 unit tests (Haiku).
 - Wave 2: Opus integration, README, Pages workflow, browser verification.
+
+## Outcome
+- T01 (Sonnet) guest UI, T02 (Sonnet) admin, T03 (Haiku) 40 unit tests: all done first pass, no retries.
+- Opus fixes during integration: `npm test` glob, `parsePrice('abc')` now invalid (caught by T03), de-duplicated welcome copy.
+- Opus browser verification: 13 cards, failed refresh keeps list + banner, offline uses cached copy, no cache → error state (not empty), dark + reduced motion render, admin loads.
+- Not verified: real GitHub publish/upload (needs a token).

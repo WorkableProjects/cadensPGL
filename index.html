@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-text-size="normal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caden's Gift List</title>
+  <meta name="description" content="Caden's gift wishlist: see what he wants, why he wants it, and where to buy it.">
+  <script>
+    try {
+      var s = localStorage.getItem('pgl.textSize');
+      if (s === 'normal' || s === 'bigger' || s === 'biggest') document.documentElement.setAttribute('data-text-size', s);
+    } catch (e) { /* storage blocked: keep default */ }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+  <a class="skip-link" href="#gifts">Skip to gifts</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <h1 id="page-title">Caden's Gift List</h1>
+      <p id="welcome" class="welcome"></p>
+      <p class="helper">Tap a gift to see why I want it and where to buy it.</p>
+    </div>
+  </header>
+
+  <div class="toolbar" role="search" aria-label="Find and filter gifts">
+    <div class="wrap toolbar-inner">
+      <div class="field search-field">
+        <label for="search">Search gifts</label>
+        <input id="search" class="input" type="search" placeholder="Try a name, tag, or reason" autocomplete="off" enterkeyhint="search">
+      </div>
+
+      <div class="ctl-group">
+        <span class="ctl-label" id="filter-label">Show</span>
+        <div class="seg" id="filter-seg" role="group" aria-labelledby="filter-label">
+          <button type="button" class="seg-btn" data-filter="all" aria-pressed="true">All (0)</button>
+          <button type="button" class="seg-btn" data-filter="available" aria-pressed="false">Available (0)</button>
+          <button type="button" class="seg-btn" data-filter="purchased" aria-pressed="false">Purchased (0)</button>
+        </div>
+      </div>
+
+      <div class="ctl-group">
+        <span class="ctl-label" id="size-label">Text size</span>
+        <div class="seg" id="size-seg" role="group" aria-labelledby="size-label">
+          <button type="button" class="seg-btn" data-size="normal" aria-pressed="true">Normal</button>
+          <button type="button" class="seg-btn" data-size="bigger" aria-pressed="false">Bigger</button>
+          <button type="button" class="seg-btn" data-size="biggest" aria-pressed="false">Biggest</button>
+        </div>
+      </div>
+
+      <div class="refresh-group">
+        <button type="button" id="refresh" class="btn btn-secondary"><span class="spinner" aria-hidden="true"></span><span id="refresh-label">Refresh list</span></button>
+        <p class="updated">Last updated <time id="updated" datetime="">…</time></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <p id="stats" class="stats" aria-live="polite"></p>
+    <div id="banners" class="banners" role="status"></div>
+  </div>
+
+  <main id="gifts" class="wrap main" tabindex="-1">
+    <ul id="grid" class="grid" aria-label="Gifts"></ul>
+    <div id="state-area"></div>
+    <noscript><p class="empty">This gift list needs JavaScript to load. Please turn it on and refresh the page.</p></noscript>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap"><a href="admin.html">List keeper tools</a></div>
+  </footer>
+
+  <p id="sr-status" class="visually-hidden" role="status" aria-live="polite"></p>
+  <div id="toasts" class="toast-region body-toasts" role="status" aria-live="polite"></div>
+
+  <script src="vendor/papaparse.min.js"></script>
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

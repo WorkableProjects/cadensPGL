@@ -33,8 +33,10 @@ export function safeHttpUrl(v) {
 }
 
 export function parsePrice(v) {
-  const s = str(v).replace(/[^0-9.,-]/g, '').replace(/,(?=\d{3}\b)/g, '');
-  if (!s) return null;
+  const raw = str(v);
+  if (!raw) return null;
+  const s = raw.replace(/[^0-9.,-]/g, '').replace(/,(?=\d{3}\b)/g, '');
+  if (!s) return NaN;
   const n = Number(s);
   return Number.isFinite(n) && n >= 0 ? n : NaN;
 }
